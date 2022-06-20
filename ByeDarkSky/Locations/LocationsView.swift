@@ -42,7 +42,7 @@ struct LocationsView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .menuOrder(.automatic)
+                    .menuOrder(.fixed)
                 }
             }
             .alert("Error (번역)", isPresented: .constant(error != nil), actions: {
