@@ -9,23 +9,58 @@ import SwiftUI
 import CoreLocation
 
 struct LocationsView: View {
+    @Binding var selectedLocation: Location?
+    @StateObject var viewModel: LocationsViewModel
     @State private var error: Error?
-    @ObservedObject private var viewModel: LocationsViewModel = .init()
     
     var body: some View {
-        List(viewModel.locations, rowContent: { location in
-            Text(String("\(location.clPlacemark.name!)"))
-        })
+        List(selection: $selectedLocation) {
+            ForEach(viewModel.locations, id: \.self) { location in
+                HStack {
+                    Image(systemName: location.symbolName)
+
+                    VStack(alignment: .leading) {
+                        Text(location.title)
+                        Text(location.condition)
+                            .foregroundColor(Color(uiColor: .tertiaryLabel))
+                    }
+
+                    Spacer()
+
+                    Text(location.temperature)
+                    Image(systemName: "chevron.forward")
+                        .foregroundColor(Color(uiColor: .tertiaryLabel))
+                }
+            }
+            .onDelete { indexSet in
+                Task.detached(priority: .medium) {
+                    do {
+                        try await viewModel.deleteLocation(at: indexSet)
+                    } catch {
+                        await MainActor.run {
+                            self.error = error
+                        }
+                    }
+                }
+            }
+        }
+            .animation(.easeOut, value: viewModel.locations)
             .navigationTitle(Localizable.LOCATIONS.localizedString)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EditButton()
+                }
+                
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Menu {
                         Button {
-                            Task { [viewModel] in
+                            Task.detached(priority: .medium) {
                                 do {
                                     try await viewModel.addCurrentLocation()
                                 } catch {
-                                    self.error = error
+                                    await MainActor.run {
+                                        self.error = error
+                                    }
                                 }
                             }
                         } label: {
@@ -45,9 +80,7 @@ struct LocationsView: View {
                     .menuOrder(.fixed)
                 }
             }
-            .alert("Error (번역)", isPresented: .constant(error != nil), actions: {
-                
-            }, message: {
+            .alert("Error (번역)", isPresented: .constant(error != nil), actions: {}, message: {
                 if let error {
                     Text(String("\(error)"))
                 }
@@ -55,8 +88,20 @@ struct LocationsView: View {
     }
 }
 
-struct LocationsView_Previews: PreviewProvider {
-    static var previews: some View {
-        LocationsView()
-    }
-}
+#if DEBUG
+//fileprivate struct LocationsView_Previews: PreviewProvider {
+////    private final class LocationsViewMockModel: LocationsViewModel {
+////        var locations: [Location] = [
+////
+////        ]
+////
+////        func addCurrentLocation() async throws {
+////
+////        }
+////    }
+//    
+//    static var previews: some View {
+//        LocationsView()
+//    }
+//}
+#endif

@@ -7,27 +7,35 @@
 
 import SwiftUI
 import CoreLocation
+import WeatherKit
 import ByeDarkSkyCore
 
-final actor LocationsViewModel: NSObject, ObservableObject {
+final class LocationsViewModel: NSObject, ObservableObject {
     @MainActor @Published var locations: [Location] = []
-    private var statusContinuation: CheckedContinuation<CLAuthorizationStatus, Never>?
-    private var clLocationContinuation: CheckedContinuation<CLLocation, Error>?
-    private let clLocationManager: CLLocationManager = .init()
+    private var statusContinuations: [CLLocationManager: CheckedContinuation<CLAuthorizationStatus, Never>] = [:]
+    private var clLocationContinuations: [CLLocationManager: CheckedContinuation<CLLocation, Error>] = [:]
     private let clGeocoder: CLGeocoder = .init()
-    
-    override init() {
-        super.init()
-        clLocationManager.delegate = self
-    }
+    private let weatherService: WeatherService = .shared
+    private let measurementFormatter: MeasurementFormatter = .init()
     
     func addCurrentLocation() async throws {
+        let clLocationManager: CLLocationManager = await MainActor.run { [weak self] in
+            /*
+             Core Location calls the methods of your delegate object on the runloop from the thread on which you initialized CLLocationManager. That thread must itself have an active run loop, like the one found in your app’s main thread.
+             https://developer.apple.com/documentation/corelocation/cllocationmanagerdelegate
+             */
+            let clLocationManager: CLLocationManager = .init()
+            clLocationManager.delegate = self
+            return clLocationManager
+        }
+        
         switch clLocationManager.authorizationStatus {
         case .notDetermined:
-            let status: CLAuthorizationStatus = await withCheckedContinuation { continuation in
-                statusContinuation = continuation
+            let status: CLAuthorizationStatus = await withCheckedContinuation { [weak self, clLocationManager] continuation in
+                self?.statusContinuations[clLocationManager] = continuation
                 clLocationManager.requestWhenInUseAuthorization()
             }
+            statusContinuations.removeValue(forKey: clLocationManager)
             
             switch status {
             case .authorizedAlways, .authorizedWhenInUse:
@@ -43,57 +51,69 @@ final actor LocationsViewModel: NSObject, ObservableObject {
             throw BDSError.failedToGetLocationAuthorization
         }
         
-        let clLocation: CLLocation = try await withCheckedThrowingContinuation { continuation in
-            clLocationContinuation = continuation
+        log.info("Authorized")
+        
+        let clLocation: CLLocation = try await withCheckedThrowingContinuation { [weak self, clLocationManager] continuation in
+            self?.clLocationContinuations[clLocationManager] = continuation
             clLocationManager.requestLocation()
         }
+        clLocationContinuations.removeValue(forKey: clLocationManager)
         
-        guard let clPlacemark: CLPlacemark = try await clGeocoder.reverseGeocodeLocation(clLocation).first else {
+        async let currentWeather: CurrentWeather = weatherService.weather(for: clLocation, including: .current)
+        async let clPlacemarks: [CLPlacemark] = clGeocoder.reverseGeocodeLocation(clLocation)
+        guard let clPlacemark: CLPlacemark = try await clPlacemarks.first else {
             throw BDSError.noLocationFound
         }
+        let location: Location = try await .init(clLocation: clLocation,
+                                                 symbolName: currentWeather.symbolName,
+                                                 title: clPlacemark.name ?? "(no name 번역)",
+                                                 temperature: measurementFormatter.string(from: currentWeather.temperature),
+                                                 condition: currentWeather.condition.localizedString)
         
         await MainActor.run { [weak self] in
-            self?.locations.append(.init(clPlacemark: clPlacemark))
+            self?.locations.append(location)
         }
     }
     
-    private func clearStatusContinuation() {
-        statusContinuation = nil
-    }
-    
-    private func clearCLLocationContinuation() {
-        clLocationContinuation = nil
+    func deleteLocation(at indexSet: IndexSet) async throws {
+        var locations: [Location] = await locations
+        indexSet.forEach { index in
+            locations.remove(at: index)
+        }
+        await MainActor.run { [weak self, locations] in
+            self?.locations = locations
+        }
     }
 }
 
 extension LocationsViewModel: CLLocationManagerDelegate {
-    nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        Task { [weak self] in
-            await self?.statusContinuation?.resume(returning: manager.authorizationStatus)
-            await self?.clearStatusContinuation()
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        guard let statusContinuation: CheckedContinuation<CLAuthorizationStatus, Never> = statusContinuations[manager] else {
+            log.info("Failed to find Continunation - is it canceled?")
+            return
         }
+        statusContinuation.resume(returning: manager.authorizationStatus)
     }
     
-    nonisolated func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        Task { [weak self] in
-            if let locationContinuation: CheckedContinuation<CLLocation, Error> = await self?.clLocationContinuation {
-                locationContinuation.resume(throwing: error)
-                await self?.clearCLLocationContinuation()
-            }
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        guard let clLocationContinuation: CheckedContinuation<CLLocation, Error> = clLocationContinuations[manager] else {
+            log.info("Failed to find Continunation - is it canceled?")
+            return
         }
+        clLocationContinuation.resume(throwing: error)
     }
     
-    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        Task { [weak self] in
-            if let locationContinuation: CheckedContinuation<CLLocation, Error> = await self?.clLocationContinuation {
-                if let location: CLLocation = locations.first {
-                    locationContinuation.resume(returning: location)
-                } else {
-                    locationContinuation.resume(throwing: BDSError.noLocationFound)
-                }
-                
-                await self?.clearStatusContinuation()
-            }
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let clLocationContinuation: CheckedContinuation<CLLocation, Error> = clLocationContinuations[manager] else {
+            log.info("Failed to find Continunation - is it canceled?")
+            return
         }
+        
+        guard let clLocation: CLLocation = locations.first else {
+            clLocationContinuation.resume(throwing: BDSError.noLocationFound)
+            return
+        }
+        
+        clLocationContinuation.resume(returning: clLocation)
     }
 }

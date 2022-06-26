@@ -9,13 +9,19 @@ import SwiftUI
 
 @main
 struct ByeDarkSkyApp: App {
+    @State private var selectedLocation: Location?
+    
     var body: some Scene {
         WindowGroup {
-            NavigationSplitView {
-                LocationsView()
+            NavigationSplitView(columnVisibility: .constant(.doubleColumn)) {
+                LocationsView(selectedLocation: $selectedLocation, viewModel: LocationsViewModel())
             } detail: {
-                WeatherView()
+                WeatherView(location: $selectedLocation)
             }
+            .navigationSplitViewStyle(.balanced)
+            .onReceive(_selectedLocation.wrappedValue.publisher, perform: { o in
+                print("Test")
+            })
         }
     }
 }

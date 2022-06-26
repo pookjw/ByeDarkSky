@@ -8,13 +8,17 @@
 import SwiftUI
 
 struct WeatherView: View {
+    @Binding var location: Location?
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Image(systemName: location?.symbolName ?? "folder")
+            .navigationTitle(location?.title ?? .init())
+            .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-struct WeatherView_Previews: PreviewProvider {
-    static var previews: some View {
-        WeatherView()
-    }
-}
+//struct WeatherView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        WeatherView()
+//    }
+//}

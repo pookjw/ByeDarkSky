@@ -21,7 +21,10 @@
 		4F39BA5228604A13006C6946 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4F39BA5428604A13006C6946 /* Localizable.strings */; };
 		4F39BA5A28604A94006C6946 /* Localizable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F39BA5928604A94006C6946 /* Localizable.swift */; };
 		4F39BA5C28604B08006C6946 /* Localizable+localizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F39BA5B28604B08006C6946 /* Localizable+localizedString.swift */; };
-		4F39BA6028604E2A006C6946 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F39BA5F28604E2A006C6946 /* Location.swift */; };
+		4FA4BF1C286855BF003E448A /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FA4BF1B286855BF003E448A /* Log.swift */; };
+		4FAACBD72868693E007A707C /* WeatherCondition+localizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FAACBD62868693E007A707C /* WeatherCondition+localizedString.swift */; };
+		4FAACBDF28686DC6007A707C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FAACBDE28686DC6007A707C /* main.swift */; };
+		4FAACC192868B41B007A707C /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FAACC182868B41B007A707C /* Location.swift */; };
 		4FF993D4286080030068BE9C /* BDSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF993D3286080030068BE9C /* BDSError.swift */; };
 /* End PBXBuildFile section */
 
@@ -61,6 +64,15 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4FAACBDA28686DC6007A707C /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -80,8 +92,12 @@
 		4F39BA5528604A16006C6946 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4F39BA5928604A94006C6946 /* Localizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localizable.swift; sourceTree = "<group>"; };
 		4F39BA5B28604B08006C6946 /* Localizable+localizedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Localizable+localizedString.swift"; sourceTree = "<group>"; };
-		4F39BA5F28604E2A006C6946 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		4F39BA612860542B006C6946 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		4FA4BF1B286855BF003E448A /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		4FAACBD62868693E007A707C /* WeatherCondition+localizedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WeatherCondition+localizedString.swift"; sourceTree = "<group>"; };
+		4FAACBDC28686DC6007A707C /* ByeDarkSkyLocalizableScript */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ByeDarkSkyLocalizableScript; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FAACBDE28686DC6007A707C /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		4FAACC182868B41B007A707C /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		4FF993D3286080030068BE9C /* BDSError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDSError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -109,6 +125,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4FAACBD928686DC6007A707C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -118,6 +141,7 @@
 				4F39BA102860395B006C6946 /* ByeDarkSky */,
 				4F39BA2628603AD0006C6946 /* ByeDarkSkyCore */,
 				4F39BA3228603AD0006C6946 /* ByeDarkSkyCoreTests */,
+				4FAACBDD28686DC6007A707C /* ByeDarkSkyLocalizableScript */,
 				4F39BA0F2860395B006C6946 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -128,6 +152,7 @@
 				4F39BA0E2860395B006C6946 /* ByeDarkSky.app */,
 				4F39BA2528603AD0006C6946 /* ByeDarkSkyCore.framework */,
 				4F39BA2C28603AD0006C6946 /* ByeDarkSkyCoreTests.xctest */,
+				4FAACBDC28686DC6007A707C /* ByeDarkSkyLocalizableScript */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -140,8 +165,9 @@
 				4F39BA152860395C006C6946 /* Assets.xcassets */,
 				4F39BA172860395C006C6946 /* ByeDarkSky.entitlements */,
 				4F39BA5428604A13006C6946 /* Localizable.strings */,
-				4F39BA5628604A44006C6946 /* Service */,
 				4F39BA182860395C006C6946 /* Preview Content */,
+				4FAACBD528686923007A707C /* Extension */,
+				4F39BA5628604A44006C6946 /* Service */,
 				4F39BA4C28604970006C6946 /* Locations */,
 				4F39BA4D28604982006C6946 /* Weather */,
 			);
@@ -161,6 +187,7 @@
 			children = (
 				4F39BA2728603AD0006C6946 /* ByeDarkSkyCore.h */,
 				4FF993D3286080030068BE9C /* BDSError.swift */,
+				4FA4BF1D286859FA003E448A /* Extension */,
 				4F39BA4728603C07006C6946 /* Service */,
 				4F39BA4228603ADF006C6946 /* Domain */,
 				4F39BA4128603ADA006C6946 /* Data */,
@@ -189,7 +216,8 @@
 		4F39BA4228603ADF006C6946 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				4F39BA4628603B7E006C6946 /* Repository */,
+				4FAACBE4286888BE007A707C /* DataSource */,
+				4F39BA4628603B7E006C6946 /* RepositoryImpl */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -215,16 +243,17 @@
 			path = Entity;
 			sourceTree = "<group>";
 		};
-		4F39BA4628603B7E006C6946 /* Repository */ = {
+		4F39BA4628603B7E006C6946 /* RepositoryImpl */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			path = Repository;
+			path = RepositoryImpl;
 			sourceTree = "<group>";
 		};
 		4F39BA4728603C07006C6946 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				4FA4BF1B286855BF003E448A /* Log.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -232,9 +261,9 @@
 		4F39BA4C28604970006C6946 /* Locations */ = {
 			isa = PBXGroup;
 			children = (
-				4F39BA5F28604E2A006C6946 /* Location.swift */,
 				4F39BA48286048A9006C6946 /* LocationsView.swift */,
 				4F39BA4E286049A7006C6946 /* LocationsViewModel.swift */,
+				4FAACC182868B41B007A707C /* Location.swift */,
 			);
 			path = Locations;
 			sourceTree = "<group>";
@@ -250,10 +279,48 @@
 		4F39BA5628604A44006C6946 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				4FAACBE328686FA2007A707C /* Localizable */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		4FA4BF1D286859FA003E448A /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		4FAACBD528686923007A707C /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				4FAACBD62868693E007A707C /* WeatherCondition+localizedString.swift */,
+			);
+			path = Extension;
+			sourceTree = "<group>";
+		};
+		4FAACBDD28686DC6007A707C /* ByeDarkSkyLocalizableScript */ = {
+			isa = PBXGroup;
+			children = (
+				4FAACBDE28686DC6007A707C /* main.swift */,
+			);
+			path = ByeDarkSkyLocalizableScript;
+			sourceTree = "<group>";
+		};
+		4FAACBE328686FA2007A707C /* Localizable */ = {
+			isa = PBXGroup;
+			children = (
 				4F39BA5928604A94006C6946 /* Localizable.swift */,
 				4F39BA5B28604B08006C6946 /* Localizable+localizedString.swift */,
 			);
-			path = Service;
+			path = Localizable;
+			sourceTree = "<group>";
+		};
+		4FAACBE4286888BE007A707C /* DataSource */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DataSource;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -326,6 +393,23 @@
 			productReference = 4F39BA2C28603AD0006C6946 /* ByeDarkSkyCoreTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		4FAACBDB28686DC6007A707C /* ByeDarkSkyLocalizableScript */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4FAACBE028686DC6007A707C /* Build configuration list for PBXNativeTarget "ByeDarkSkyLocalizableScript" */;
+			buildPhases = (
+				4FAACBD828686DC6007A707C /* Sources */,
+				4FAACBD928686DC6007A707C /* Frameworks */,
+				4FAACBDA28686DC6007A707C /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ByeDarkSkyLocalizableScript;
+			productName = ByeDarkSkyLocalizableScript;
+			productReference = 4FAACBDC28686DC6007A707C /* ByeDarkSkyLocalizableScript */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -347,6 +431,9 @@
 						CreatedOnToolsVersion = 14.0;
 						TestTargetID = 4F39BA0D2860395B006C6946;
 					};
+					4FAACBDB28686DC6007A707C = {
+						CreatedOnToolsVersion = 14.0;
+					};
 				};
 			};
 			buildConfigurationList = 4F39BA092860395B006C6946 /* Build configuration list for PBXProject "ByeDarkSky" */;
@@ -366,6 +453,7 @@
 				4F39BA0D2860395B006C6946 /* ByeDarkSky */,
 				4F39BA2428603AD0006C6946 /* ByeDarkSkyCore */,
 				4F39BA2B28603AD0006C6946 /* ByeDarkSkyCoreTests */,
+				4FAACBDB28686DC6007A707C /* ByeDarkSkyLocalizableScript */,
 			);
 		};
 /* End PBXProject section */
@@ -402,13 +490,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FAACBD72868693E007A707C /* WeatherCondition+localizedString.swift in Sources */,
 				4F39BA4B2860493A006C6946 /* WeatherView.swift in Sources */,
+				4FAACC192868B41B007A707C /* Location.swift in Sources */,
 				4F39BA5C28604B08006C6946 /* Localizable+localizedString.swift in Sources */,
 				4F39BA4F286049A7006C6946 /* LocationsViewModel.swift in Sources */,
 				4F39BA122860395B006C6946 /* ByeDarkSkyApp.swift in Sources */,
 				4F39BA5A28604A94006C6946 /* Localizable.swift in Sources */,
 				4F39BA49286048A9006C6946 /* LocationsView.swift in Sources */,
-				4F39BA6028604E2A006C6946 /* Location.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +505,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FA4BF1C286855BF003E448A /* Log.swift in Sources */,
 				4FF993D4286080030068BE9C /* BDSError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -425,6 +515,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F39BA3428603AD0006C6946 /* WeatherKitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4FAACBD828686DC6007A707C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4FAACBDF28686DC6007A707C /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -763,6 +861,32 @@
 			};
 			name = Release;
 		};
+		4FAACBE128686DC6007A707C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P53D29U9LJ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4FAACBE228686DC6007A707C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P53D29U9LJ;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -798,6 +922,15 @@
 			buildConfigurations = (
 				4F39BA3F28603AD0006C6946 /* Debug */,
 				4F39BA4028603AD0006C6946 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4FAACBE028686DC6007A707C /* Build configuration list for PBXNativeTarget "ByeDarkSkyLocalizableScript" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4FAACBE128686DC6007A707C /* Debug */,
+				4FAACBE228686DC6007A707C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
