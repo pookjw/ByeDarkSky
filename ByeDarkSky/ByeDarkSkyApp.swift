@@ -19,9 +19,6 @@ struct ByeDarkSkyApp: App {
                 WeatherView(location: $selectedLocation)
             }
             .navigationSplitViewStyle(.balanced)
-            .onReceive(_selectedLocation.wrappedValue.publisher, perform: { o in
-                print("Test")
-            })
         }
     }
 }
