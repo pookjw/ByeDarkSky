@@ -261,9 +261,9 @@
 		4F39BA4C28604970006C6946 /* Locations */ = {
 			isa = PBXGroup;
 			children = (
+				4FAACC182868B41B007A707C /* Location.swift */,
 				4F39BA48286048A9006C6946 /* LocationsView.swift */,
 				4F39BA4E286049A7006C6946 /* LocationsViewModel.swift */,
-				4FAACC182868B41B007A707C /* Location.swift */,
 			);
 			path = Locations;
 			sourceTree = "<group>";

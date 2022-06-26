@@ -9,13 +9,13 @@ import SwiftUI
 import CoreLocation
 
 struct LocationsView: View {
-    @Binding var selectedLocation: Location?
+    @Binding var selectedLocation: CLLocation?
     @StateObject var viewModel: LocationsViewModel
     @State private var error: Error?
     
     var body: some View {
         List(selection: $selectedLocation) {
-            ForEach(viewModel.locations, id: \.self) { location in
+            ForEach(viewModel.locations, id: \.clLocation) { location in
                 HStack {
                     Image(systemName: location.symbolName)
 

@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 struct WeatherView: View {
-    @Binding var location: Location?
+    @Binding var location: CLLocation?
     
     var body: some View {
-        Image(systemName: location?.symbolName ?? "folder")
-            .navigationTitle(location?.title ?? .init())
+        Text(String(describing: location))
             .navigationBarTitleDisplayMode(.inline)
     }
 }

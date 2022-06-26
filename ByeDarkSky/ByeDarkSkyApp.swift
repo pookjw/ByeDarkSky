@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import CoreLocation
 
 @main
 struct ByeDarkSkyApp: App {
-    @State private var selectedLocation: Location?
+    @State private var selectedLocation: CLLocation?
     
     var body: some Scene {
         WindowGroup {
