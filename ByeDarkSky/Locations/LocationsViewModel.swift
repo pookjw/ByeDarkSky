@@ -71,7 +71,7 @@ final class LocationsViewModel: NSObject, ObservableObject {
                                                  condition: currentWeather.condition.localizedString)
         
         await MainActor.run { [weak self] in
-            self?.locations.append(location)
+            self?.locations.insert(location, at: 0)
         }
     }
     
@@ -89,23 +89,25 @@ final class LocationsViewModel: NSObject, ObservableObject {
 extension LocationsViewModel: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         guard let statusContinuation: CheckedContinuation<CLAuthorizationStatus, Never> = statusContinuations[manager] else {
-            log.info("Failed to find Continunation - is it canceled?")
+            log.warning("Failed to find Continunation - is it canceled?")
             return
         }
+        
         statusContinuation.resume(returning: manager.authorizationStatus)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         guard let clLocationContinuation: CheckedContinuation<CLLocation, Error> = clLocationContinuations[manager] else {
-            log.info("Failed to find Continunation - is it canceled?")
+            log.warning("Failed to find Continunation - is it canceled?")
             return
         }
+        
         clLocationContinuation.resume(throwing: error)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let clLocationContinuation: CheckedContinuation<CLLocation, Error> = clLocationContinuations[manager] else {
-            log.info("Failed to find Continunation - is it canceled?")
+            log.warning("Failed to find Continunation - is it canceled?")
             return
         }
         

@@ -22,14 +22,14 @@ struct LocationsView: View {
                     VStack(alignment: .leading) {
                         Text(location.title)
                         Text(location.condition)
-                            .foregroundColor(Color(uiColor: .tertiaryLabel))
+                            .foregroundColor(.secondary)
                     }
 
                     Spacer()
 
                     Text(location.temperature)
                     Image(systemName: "chevron.forward")
-                        .foregroundColor(Color(uiColor: .tertiaryLabel))
+                        .foregroundColor(.secondary)
                 }
             }
             .onDelete { indexSet in
