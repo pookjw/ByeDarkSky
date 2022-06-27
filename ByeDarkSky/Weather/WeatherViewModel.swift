@@ -16,6 +16,8 @@ actor WeatherViewModel: ObservableObject {
     private let measurementFormatter: MeasurementFormatter = .init()
     
     nonisolated func request(using clLocation: CLLocation) async throws {
+        log.info(clLocation)
+        
         let weather: Weather = try await weatherService.weather(for: clLocation)
         let currentWeather: CurrentWeather = weather.currentWeather
         
