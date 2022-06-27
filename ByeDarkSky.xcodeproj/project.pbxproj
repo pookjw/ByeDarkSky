@@ -282,8 +282,8 @@
 			children = (
 				4F39BA4A2860493A006C6946 /* WeatherView.swift */,
 				4FA4A52D2869FEF60013512F /* WeatherLayout.swift */,
-				4F5E742728699FB600B20E99 /* WeatherViewModel.swift */,
 				4FA4A52F286A057C0013512F /* WeatherItem.swift */,
+				4F5E742728699FB600B20E99 /* WeatherViewModel.swift */,
 			);
 			path = Weather;
 			sourceTree = "<group>";

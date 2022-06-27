@@ -14,9 +14,14 @@ actor WeatherViewModel: ObservableObject {
     @MainActor @Published private(set) var items: [String: [WeatherItem]] = [:]
     private let weatherService: WeatherService = .shared
     private let measurementFormatter: MeasurementFormatter = .init()
+    private var currentCLLocation: CLLocation?
     
     nonisolated func request(using clLocation: CLLocation) async throws {
-        log.info(clLocation)
+        if let currentCLLocation: CLLocation = await currentCLLocation,clLocation.isEqual(currentCLLocation) {
+            return
+        }
+        await setCurrentCLLocation(clLocation)
+        log.info("Requested: \(clLocation)")
         
         let weather: Weather = try await weatherService.weather(for: clLocation)
         let currentWeather: CurrentWeather = weather.currentWeather
@@ -65,5 +70,9 @@ actor WeatherViewModel: ObservableObject {
         } onCancel: {
             log.info("Cancelled!")
         }
+    }
+    
+    private func setCurrentCLLocation(_ clLocation: CLLocation) {
+        self.currentCLLocation = clLocation
     }
 }
