@@ -9,12 +9,12 @@ import SwiftUI
 import CoreLocation
 
 struct LocationsView: View {
-    @StateObject var viewModel: LocationsViewModel = .init()
-    @State private var error: Error?
-    @EnvironmentObject var mainViewModel: MainViewModel
+    @EnvironmentObject var mainEnvironmnetObject: MainEnvironmentObject
+    @StateObject private var viewModel: LocationsViewModel = .init()
+    @MainActor @State private var error: Error?
     
     var body: some View {
-        List(selection: $mainViewModel.selectedLocation) {
+        List(selection: $mainEnvironmnetObject.selectedLocation) {
             ForEach(viewModel.locations, id: \.clLocation) { location in
                 HStack {
                     Image(systemName: location.symbolName)

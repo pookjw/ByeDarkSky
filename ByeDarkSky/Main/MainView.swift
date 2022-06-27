@@ -8,12 +8,12 @@
 import SwiftUI
 import CoreLocation
 
-actor MainViewModel: ObservableObject {
+actor MainEnvironmentObject: ObservableObject {
     @MainActor @Published var selectedLocation: CLLocation?
 }
 
 struct MainView: View {
-    @StateObject var mainViewModel: MainViewModel = .init()
+    @StateObject var mainEnvironmnetObject: MainEnvironmentObject = .init()
     
     var body: some View {
         NavigationSplitView(columnVisibility: .constant(.doubleColumn)) {
@@ -22,6 +22,6 @@ struct MainView: View {
             WeatherView()
         }
         .navigationSplitViewStyle(.balanced)
-        .environmentObject(mainViewModel)
+        .environmentObject(mainEnvironmnetObject)
     }
 }

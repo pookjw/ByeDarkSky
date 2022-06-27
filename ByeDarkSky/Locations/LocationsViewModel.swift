@@ -11,7 +11,7 @@ import WeatherKit
 import ByeDarkSkyCore
 
 actor LocationsViewModel: NSObject, ObservableObject {
-    @MainActor @Published var locations: [Location] = []
+    @MainActor @Published private(set) var locations: [Location] = []
     private var statusContinuations: [CLLocationManager: CheckedContinuation<CLAuthorizationStatus, Never>] = [:]
     private var clLocationContinuations: [CLLocationManager: CheckedContinuation<CLLocation, Error>] = [:]
     private let clGeocoder: CLGeocoder = .init()
