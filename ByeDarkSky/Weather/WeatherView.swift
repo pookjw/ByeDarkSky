@@ -9,11 +9,13 @@ import SwiftUI
 import CoreLocation
 
 struct WeatherView: View {
-    @Binding var location: CLLocation?
+    @EnvironmentObject var mainViewModel: MainViewModel
     
     var body: some View {
-        Text(String(describing: location))
+        Text(String(describing: mainViewModel.selectedLocation))
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
     }
 }
 

@@ -9,82 +9,104 @@ import SwiftUI
 import CoreLocation
 
 struct LocationsView: View {
-    @Binding var selectedLocation: CLLocation?
-    @StateObject var viewModel: LocationsViewModel
+    @StateObject var viewModel: LocationsViewModel = .init()
     @State private var error: Error?
+    @EnvironmentObject var mainViewModel: MainViewModel
     
     var body: some View {
-        List(selection: $selectedLocation) {
+        List(selection: $mainViewModel.selectedLocation) {
             ForEach(viewModel.locations, id: \.clLocation) { location in
                 HStack {
                     Image(systemName: location.symbolName)
-
+                    
                     VStack(alignment: .leading) {
                         Text(location.title)
                         Text(location.condition)
                             .foregroundColor(.secondary)
                     }
-
+                    
                     Spacer()
-
+                    
                     Text(location.temperature)
                     Image(systemName: "chevron.forward")
                         .foregroundColor(.secondary)
                 }
+                .contextMenu {
+                    Button {
+                        Task.detached {
+                            await viewModel.delete(location: location)
+                        }
+                    } label: {
+                        Image(systemName: "trash")
+                        Text("Delete (번역)")
+                    }
+                }
             }
             .onDelete { indexSet in
-                Task.detached(priority: .medium) {
-                    do {
-                        try await viewModel.deleteLocation(at: indexSet)
-                    } catch {
-                        await MainActor.run {
-                            self.error = error
-                        }
-                    }
+                Task.detached {
+                    await viewModel.deleteLocation(at: indexSet)
                 }
             }
         }
-            .animation(.easeOut, value: viewModel.locations)
-            .navigationTitle(Localizable.LOCATIONS.localizedString)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    EditButton()
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu {
-                        Button {
-                            Task.detached(priority: .medium) {
-                                do {
-                                    try await viewModel.addCurrentLocation()
-                                } catch {
-                                    await MainActor.run {
-                                        self.error = error
-                                    }
-                                }
+        .animation(.easeOut, value: viewModel.locations)
+        .navigationTitle(Localizable.LOCATIONS.localizedString)
+        .toolbar {
+#if os(macOS)
+            ToolbarItem(placement: .automatic) {
+                Button {
+                    Task.detached {
+                        do {
+                            try await viewModel.addCurrentLocation()
+                        } catch {
+                            await MainActor.run {
+                                self.error = error
                             }
-                        } label: {
-                            Image(systemName: "location")
-                            Text("Add from Current Location (번역)")
                         }
-                        
-                        Button {
-                            
-                        } label: {
-                            Image(systemName: "map")
-                            Text("Add from Maps (번역)")
-                        }
-                    } label: {
-                        Image(systemName: "plus")
                     }
-                    .menuOrder(.fixed)
+                } label: {
+                    Image(systemName: "location")
                 }
             }
-            .alert("Error (번역)", isPresented: .constant(error != nil), actions: {}, message: {
-                if let error {
-                    Text(String("\(error)"))
+#else
+            ToolbarItem(placement: .automatic) {
+                EditButton()
+            }
+            
+            ToolbarItem(placement: .automatic) {
+                Menu {
+                    Button {
+                        Task.detached {
+                            do {
+                                try await viewModel.addCurrentLocation()
+                            } catch {
+                                await MainActor.run {
+                                    self.error = error
+                                }
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "location")
+                        Text("Add from Current Location (번역)")
+                    }
+                    
+                    Button {
+                        
+                    } label: {
+                        Image(systemName: "map")
+                        Text("Add from Maps (번역)")
+                    }
+                } label: {
+                    Image(systemName: "plus")
                 }
-            })
+                .menuOrder(.fixed)
+            }
+#endif
+        }
+        .alert("Error (번역)", isPresented: .constant(error != nil), actions: {}, message: {
+            if let error {
+                Text(String("\(error)"))
+            }
+        })
     }
 }
 
