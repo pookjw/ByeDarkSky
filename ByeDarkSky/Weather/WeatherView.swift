@@ -15,12 +15,16 @@ struct WeatherTempItemView: View {
     let value: String
     
     var body: some View {
-        HStack {
+        VStack {
             Image(systemName: symbolName)
             Text(title)
-            Spacer()
             Text(value)
                 .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background {
+            Color(red: Double.random(in: 0...1), green: Double.random(in: 0...1), blue: Double.random(in: 0...1))
+                .opacity(0.1)
         }
     }
 }
@@ -33,14 +37,20 @@ struct WeatherView: View {
     var body: some View {
         List(Array(viewModel.items.keys), id: \.self, rowContent: { key in
             Section(key) {
-                ForEach(viewModel.items[key] ?? []) { item in
-                    switch item {
-                    case let .image(primaryText, secondaryText, symbolName):
-                        WeatherTempItemView(symbolName: symbolName, title: primaryText, value: secondaryText)
+                WeatherLayout(itemSize: .init(width: 150, height: 150)) {
+                    ForEach(viewModel.items[key] ?? []) { item in
+                        switch item {
+                        case let .image(primaryText, secondaryText, symbolName):
+                            ViewThatFits {
+                                WeatherTempItemView(symbolName: symbolName, title: primaryText, value: secondaryText)
+                            }
+                        }
                     }
                 }
             }
+            .listRowSeparator(.hidden)
         })
+            .listStyle(PlainListStyle())
 #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
