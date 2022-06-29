@@ -34,27 +34,41 @@ struct WeatherView: View {
     @EnvironmentObject var mainEnvironmnetObject: MainEnvironmentObject
     @StateObject private var viewModel: WeatherViewModel = .init()
     @MainActor @State private var error: Error?
+    @MainActor @State private var itemSize: CGSize = .init(width: 150, height: 150)
+    @State private var toggled: Bool = false
     
     var body: some View {
         List(Array(viewModel.items.keys), id: \.self, rowContent: { key in
             Section(key) {
-                WeatherLayout(itemSize: .init(width: 150, height: 150)) {
+                WeatherLayout(itemSize: itemSize, horizontalContentMode: .fill) {
                     ForEach(viewModel.items[key] ?? []) { item in
                         switch item {
                         case let .image(primaryText, secondaryText, symbolName):
-                            ViewThatFits {
-                                WeatherTempItemView(symbolName: symbolName, title: primaryText, value: secondaryText)
-                            }
+                            WeatherTempItemView(symbolName: symbolName, title: primaryText, value: secondaryText)
                         }
                     }
                 }
             }
             .listRowSeparator(.hidden)
+            .animation(.easeOut, value: itemSize)
         })
             .listStyle(PlainListStyle())
 #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
 #endif
+            .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    Button("Test") {
+                        if toggled {
+                            itemSize = .init(width: 100, height: 100)
+                        } else {
+                            itemSize = .init(width: 200, height: 200)
+                        }
+                        toggled.toggle()
+//                        itemSize = .init(width: .random(in: 100...200), height: .random(in: 100...200))
+                    }
+                }
+            }
             .onReceive($mainEnvironmnetObject.selectedLocation.wrappedValue.publisher) { selectedLocation in
                 Task.detached {
                     do {
