@@ -237,11 +237,6 @@ struct WeatherLayout: Layout {
     }
     
     func explicitAlignment(of guide: HorizontalAlignment, in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout UUID) -> CGFloat? {
-//        if guide == .leading {
-//            return bounds.midX + 100
-//        } else {
-//            return nil
-//        }
         return nil
     }
 

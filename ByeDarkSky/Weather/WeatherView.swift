@@ -35,7 +35,6 @@ struct WeatherView: View {
     @StateObject private var viewModel: WeatherViewModel = .init()
     @MainActor @State private var error: Error?
     @MainActor @State private var itemSize: CGSize = .init(width: 150, height: 150)
-    @State private var toggled: Bool = false
     
     var body: some View {
         List(Array(viewModel.items.keys), id: \.self, rowContent: { key in
@@ -59,13 +58,7 @@ struct WeatherView: View {
             .toolbar {
                 ToolbarItem(placement: .automatic) {
                     Button("Test") {
-                        if toggled {
-                            itemSize = .init(width: 100, height: 100)
-                        } else {
-                            itemSize = .init(width: 200, height: 200)
-                        }
-                        toggled.toggle()
-//                        itemSize = .init(width: .random(in: 100...200), height: .random(in: 100...200))
+                        itemSize = .init(width: .random(in: 100...300), height: .random(in: 100...300))
                     }
                 }
             }
