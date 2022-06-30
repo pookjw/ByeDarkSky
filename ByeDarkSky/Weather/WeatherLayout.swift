@@ -8,27 +8,27 @@
 import SwiftUI
 import ByeDarkSkyCore
 
-fileprivate final class WeatherLayoutCacheStore: ObservableObject {
-    struct Geometry: Hashable {
-        let bounds: CGRect?
-        let proposal: ProposedViewSize
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(bounds?.origin.x)
-            hasher.combine(bounds?.origin.y)
-            hasher.combine(bounds?.size.width)
-            hasher.combine(bounds?.size.height)
-            hasher.combine(proposal.width)
-            hasher.combine(proposal.height)
+struct WeatherLayout: Layout {
+    struct CacheStore {
+        struct Geometry: Hashable {
+            let bounds: CGRect?
+            let proposal: ProposedViewSize
+            
+            func hash(into hasher: inout Hasher) {
+                hasher.combine(bounds?.origin.x)
+                hasher.combine(bounds?.origin.y)
+                hasher.combine(bounds?.size.width)
+                hasher.combine(bounds?.size.height)
+                hasher.combine(proposal.width)
+                hasher.combine(proposal.height)
+            }
         }
+        
+        var sizes: [Geometry: CGSize] = [:]
+        var locations: [Geometry: [CGPoint]] = [:]
     }
     
-    var sizes: [UUID: [Geometry: CGSize]] = [:]
-    var locations: [UUID: [Geometry: [CGPoint]]] = [:]
-}
-
-struct WeatherLayout: Layout {
-    typealias Cache = UUID
+    typealias Cache = CacheStore
     
     enum ContentMode {
         case fill, fit
@@ -36,8 +36,6 @@ struct WeatherLayout: Layout {
     
     private let itemSize: CGSize
     private let horizontalContentMode: ContentMode
-    
-    private var cacheStore: WeatherLayoutCacheStore = .init()
     private let useCache: Bool = true
     
     init(itemSize: CGSize = .init(width: 150, height: 150), horizontalContentMode: ContentMode = .fit) {
@@ -45,10 +43,10 @@ struct WeatherLayout: Layout {
         self.horizontalContentMode = horizontalContentMode
     }
     
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout UUID) -> CGSize {
-        let geometry: WeatherLayoutCacheStore.Geometry = .init(bounds: nil, proposal: proposal)
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout CacheStore) -> CGSize {
+        let geometry: CacheStore.Geometry = .init(bounds: nil, proposal: proposal)
         
-        if let size: CGSize = cacheStore.sizes[cache]?[geometry], useCache {
+        if let size: CGSize = cache.sizes[geometry], useCache {
             log.debug("Cached!")
             return size
         } else {
@@ -109,18 +107,16 @@ struct WeatherLayout: Layout {
                 finalSize = .init(width: width, height: finalHeight)
             }
             
-            var sizes: [WeatherLayoutCacheStore.Geometry: CGSize] = cacheStore.sizes[cache, default: [:]]
-            sizes[geometry] = finalSize
-            cacheStore.sizes[cache] = sizes
+            cache.sizes[geometry] = finalSize
             
             return finalSize
         }
     }
     
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout UUID) {
-        let geometry: WeatherLayoutCacheStore.Geometry = .init(bounds: bounds, proposal: proposal)
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout CacheStore) {
+        let geometry: CacheStore.Geometry = .init(bounds: bounds, proposal: proposal)
         
-        if let locations: [CGPoint] = cacheStore.locations[cache]?[geometry], useCache {
+        if let locations: [CGPoint] = cache.locations[geometry], useCache {
             log.debug("Cached!")
             subviews.enumerated().forEach { enumeration in
                 let index: Int = enumeration.offset
@@ -230,26 +226,24 @@ struct WeatherLayout: Layout {
                 yPosition += itemSize.height + verticalSpacing
             }
             
-            var _locations: [WeatherLayoutCacheStore.Geometry: [CGPoint]] = cacheStore.locations[cache, default: [:]]
-            _locations[geometry] = locations
-            cacheStore.locations[cache] = _locations
+            cache.locations[geometry] = locations
         }
     }
     
-    func explicitAlignment(of guide: HorizontalAlignment, in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout UUID) -> CGFloat? {
+    func explicitAlignment(of guide: HorizontalAlignment, in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout CacheStore) -> CGFloat? {
         return nil
     }
 
-    func explicitAlignment(of guide: VerticalAlignment, in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout UUID) -> CGFloat? {
+    func explicitAlignment(of guide: VerticalAlignment, in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout CacheStore) -> CGFloat? {
         return nil
     }
     
-    func makeCache(subviews: Subviews) -> UUID {
-        let cache: UUID = .init()
-        return cache
+    func makeCache(subviews: Subviews) -> CacheStore {
+        let cacheStore: CacheStore = .init()
+        return cacheStore
     }
     
-    func updateCache(_ cache: inout UUID, subviews: Subviews) {
-        cache = .init()
+    func updateCache(_ cache: inout CacheStore, subviews: Subviews) {
+//        cache = .init()
     }
 }
