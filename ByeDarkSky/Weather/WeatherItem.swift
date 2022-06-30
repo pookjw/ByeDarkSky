@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum WeatherItem: Identifiable, Hashable {
+enum WeatherItem: Identifiable, Hashable, Sendable {
     case image(primaryText: String, secondaryText: String, symbolName: String)
 //    case graph
     

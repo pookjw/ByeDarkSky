@@ -5,9 +5,9 @@
 //  Created by Jinwoo Kim on 6/27/22.
 //
 
-import CoreLocation
+@preconcurrency import CoreLocation
 
-struct Location: Identifiable, Hashable {
+struct Location: Identifiable, Hashable, Sendable {
     let clLocation: CLLocation
     let symbolName: String
     let title: String

@@ -40,7 +40,7 @@ struct WeatherView: View {
     var body: some View {
         List(Array(viewModel.items.keys), id: \.self, rowContent: { key in
             Section(key) {
-                WeatherLayout(itemSize: itemSize, horizontalContentMode: .fill) {
+                WeatherLayout(itemSize: itemSize, horizontalContentMode: .fit) {
                     ForEach(viewModel.items[key] ?? []) { item in
                         switch item {
                         case let .image(primaryText, secondaryText, symbolName):
@@ -69,6 +69,7 @@ struct WeatherView: View {
                     }
                 }
             }
+//            .frame(minWidth: itemSize.width, minHeight: itemSize.height)
             .onReceive($mainEnvironmnetObject.selectedLocation.wrappedValue.publisher) { selectedLocation in
                 Task.detached {
                     do {
